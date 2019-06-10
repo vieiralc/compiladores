@@ -4,34 +4,22 @@
 		<title>Compiler</title>
 		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 		<script src="index.js"> </script>
+		<link rel="stylesheet" type="text/css" href="./index.css"/>
 	</head>
-	<style>
-		#line1 {
-			margin-top: 5%
-		}
-		#code {
-			padding: 2px;
-			border: 1px dashed black
-		}
-		#ast {
-			border: 1px solid black
-		}
-	</style>
 <body>
 
 	<div class="container">
 		<div id="line1" class="row">
-			<div id="code" class="col-md-8">
-				<textarea rows="15" cols="80">
-					Your code here
+			<div id="code" class="col-md-7">
+				<textarea id="codetext" rows="15" cols="80">sum = lambda(x, y) x + y; println(sum(2, 3))
 				</textarea>
 			</div>
-			<div id="ast" class="col-md-4">
-				
+			<div class="col-md-5">
+				<pre id="ast"></pre>
 			</div>
 		</div>
 		<div class="row">
-			<div class="col-md-12">
+			<div id="tokens" class="col-md-12">
 				tokens
 			</div>
 		</div>
