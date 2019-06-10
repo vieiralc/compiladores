@@ -11,16 +11,60 @@
 	<div class="container">
 		<div id="line1" class="row">
 			<div id="code" class="col-md-7">
-				<textarea id="codetext" rows="15" cols="80">sum = lambda(x, y) x + y; println(sum(2, 3))
+				<textarea oninput="getCode()" id="codetext" rows="15" cols="80">sum = lambda(x, y) x + y; println(sum(2, 3))
 				</textarea>
 			</div>
 			<div class="col-md-5">
 				<pre id="ast"></pre>
 			</div>
 		</div>
+
 		<div class="row">
 			<div id="tokens" class="col-md-12">
-				tokens
+
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-md-6">
+				<div class="box">
+					<h2> Suported Tokens </h2>
+					<pre id="box">{ type: "punc", value: "(" }           // punctuation: parens, comma, semicolon etc.<br>{ type: "num", value: 5 }              // numbers<br>{ type: "str", value: "Hello World!" } // strings<br>{ type: "kw", value: "lambda" }        // keywords<br>{ type: "var", value: "a" }            // identifiers<br>{ type: "op", value: "!=" }            // operators<br></pre>
+				</div>
+			</div>
+			<div class="col-md-6">
+				<div class="box">
+					<h2> AST Description </h2>
+					<pre id="box">num { type: "num", value: NUMBER }<br>str { type: "str", value: STRING }<br>bool { type: "bool", value: true or false }<br>var { type: "var", value: NAME }<br>lambda { type: "lambda", vars: [ NAME... ], body: AST }<br>call { type: "call", func: AST, args: [ AST... ] }<br>if { type: "if", cond: AST, then: AST, else: AST }<br>assign { type: "assign", operator: "=", left: AST, right: AST }<br>binary { type: "binary", operator: OPERATOR, left: AST, right: AST }<br>prog { type: "prog", prog: [ AST... ] }<br>let { type: "let", vars: [ VARS... ], body: AST }</pre>
+				</div>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-md-12">
+				<div class="box">
+					<h2> Code examples </h2>
+					<pre id="box"># this is a comment<br>
+
+println("Hello World!");<br>
+							
+println(2 + 3 * 4);<br>
+							
+# functions are introduced with `lambda` or `λ`<br>
+fib = lambda (n) if n < 2 then n else fib(n - 1) + fib(n - 2);<br>
+							
+println(fib(15));<br>
+							
+print-range = λ(a, b)             # `λ` is synonym to `lambda`<br>
+if a <= b then {  # `then` here is optional as you can see below<br>
+print(a);<br>
+if a + 1 <= b {<br>
+print(", ");<br>
+print-range(a + 1, b);<br>
+} else println("");        # newline<br>
+};<br>
+print-range(1, 5);</pre>
+				</div>
 			</div>
 		</div>
 	</div>

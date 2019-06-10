@@ -1,21 +1,21 @@
+var tokens = []
 window.addEventListener('load', () => {
-	console.log('Hello from index.js')
-	
-	let code = document.querySelector("#codetext").value
-	
-	var tokens = TokenStream(InputStream(code))
-    var ast = parse(tokens)
-
-    //document.querySelector("#ast").innerHTML = JSON.stringify(ast, null, 2);
+    console.log('Hello from index.js')
     
-    var str = JSON.stringify(ast, undefined, 4);
-
-    output(syntaxHighlight(str));
+    // executar primeira vez
+    getCode()
+    document.querySelector("#tokens").innerHTML = JSON.stringify(tokens)
 })
+
+function getCode() {
+    let code = document.querySelector("#codetext").value
+    var ast = parse(TokenStream(InputStream(code)))
+    var str = JSON.stringify(ast, undefined, 4);
+    output(syntaxHighlight(str));
+}
 
 function output(inp) {
     document.querySelector("#ast").innerHTML = inp;
-
 }
 
 function syntaxHighlight(json) {
@@ -37,6 +37,11 @@ function syntaxHighlight(json) {
     });
 }
 
+/**
+ * 
+ * @param {*} input
+ * peek and next will return tokens 
+ */
 function InputStream(input) {
     var pos = 0, line = 1, col = 0;
     return {
@@ -69,16 +74,20 @@ function read_next() {
         skip_comment();
         return read_next();
     }
-    if (ch == '"') return read_string();
+    if (ch == '"') {
+        return read_string();
+    }
     if (is_digit(ch)) return read_number();
     if (is_id_start(ch)) return read_ident();
     if (is_punc(ch)) return {
         type  : "punc",
         value : input.next()
     };
-    if (is_op_char(ch)) return {
-        type  : "op",
-        value : read_while(is_op_char)
+    if (is_op_char(ch)) {
+        return {
+            type  : "op",
+            value : read_while(is_op_char)
+        };
     };
     input.croak("Can't handle character: " + ch);
 }
@@ -129,10 +138,15 @@ function TokenStream(input) {
             }
             return is_digit(ch);
         });
+        tokens.push({ type: "num", value: parseFloat(number) });
         return { type: "num", value: parseFloat(number) };
     }
     function read_ident() {
         var id = read_while(is_id);
+        tokens.push({
+            type  : is_keyword(id) ? "kw" : "var",
+            value : id
+        })
         return {
             type  : is_keyword(id) ? "kw" : "var",
             value : id
@@ -154,9 +168,11 @@ function TokenStream(input) {
                 str += ch;
             }
         }
+        tokens.push(str);
         return str;
     }
     function read_string() {
+        tokens.push({ type: "str", value: read_escaped('"') })
         return { type: "str", value: read_escaped('"') };
     }
     function skip_comment() {
@@ -178,10 +194,12 @@ function TokenStream(input) {
             type  : "punc",
             value : input.next()
         };
-        if (is_op_char(ch)) return {
-            type  : "op",
-            value : read_while(is_op_char)
-        };
+        if (is_op_char(ch)) {
+            return {
+                type  : "op",
+                value : read_while(is_op_char)
+            };
+        }
         input.croak("Can't handle character: " + ch);
     }
     function peek() {
